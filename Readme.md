@@ -95,9 +95,8 @@ Set Twilio webhook to:
 ## API Endpoints
 
   Endpoint       Method   Description
-  -------------- -------- ----------------------
-  /whatsapp      POST     Webhook endpoint
-  /api/reviews   GET      Fetch stored reviews
+ 1.  /whatsapp POST Webhook endpoint
+2.  /api/reviews GET Fetch stored reviews
 
 ## Troubleshooting
 
