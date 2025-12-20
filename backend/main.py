@@ -32,11 +32,21 @@ class Review(Base):
     __tablename__ = "reviews"
     id = Column(Integer, primary_key=True, index=True)
     contact_number = Column(String, index=True)
-    user_name = Column(String)
-    product_name = Column(String)
+    user_id = Column(Integer, foreign_key=True)
+    product_id = Column(Integer, foreign_key=True)
     product_review = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+
+class Users(Base):
+    __tablename__ = 'users'
+    user_id = Column(Integer, primary_key=True, index=True)
+    user_name = Column(String)
+
+class Products(Base):
+    __tablename__ = "products"
+    product_id = Column(Integer, primary_key=True, index = True)
+    product_name = Column(String)
 
 Base.metadata.create_all(bind=engine)
 
@@ -116,6 +126,26 @@ async def whatsapp_webhook(From: str = Form(...), Body: str = Form(...), db: Ses
 @app.get("/api/reviews")
 def get_reviews(db: Session = Depends(get_db)):
     return db.query(Review).order_by(Review.created_at.desc()).all()
+
+@app.delete("/api/delete")
+def delete_reviews(db: Session = Depends(get_db), User: str = Form(...)):
+    review = db.getAll(Review, User)
+    db.delete(review)
+    db.commit()
+@app.delete("/api/delete")
+def delete_reviews(db: Session = Depends(get_db), User: str = Form(...)):
+    review = db.getAll(Review, User)
+    db.delete(review)
+    db.commit()
+
+@app.delete("/api/delete_by_user_and_product")
+def delete_review_user_product(db: Session = Depends(get_db), User: str = From(...), Product: str: From(...)):
+    user_id = db.get(Users, User)
+    product_id = db.get(Products, Product)
+    review = db.get(Review, user_id, product_id)
+    db.delete(review)
+    db.commit()
+
 
 if __name__ == "__main__":    
     uvicorn.run(app, host="0.0.0.0", port=8000)
